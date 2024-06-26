@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: exam-02-service
+  namespace: appweb
+
+spec:
+  selector:
+     app: nginx
+   ports:
+     - protocol: TCP
+       ports: 80
+       targetPort: 80
+
+   type: LoadBalancer 

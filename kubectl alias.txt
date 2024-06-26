@@ -1,0 +1,43 @@
+Power Shell kubectl aliases
+
+notepad $PROFILE
+
+	function k { kubectl $args }
+	function kc { kubectl create -f $args }
+	function kn { kubectl get nodes $args }
+	function kgp { kubectl get pods $args }
+	function kgs { kubectl get services $args }
+	function kgns { kubectl get namespaces $args }
+	function kga { kubectl get all $args }
+	function kd { kubectl describe $args }
+	function kdel { kubectl delete $args }
+	function kap { kubectl apply -f $args }
+	function kex { kubectl exec -it $args }
+
+. $PROFILE
+
+FOR: Ubuntu
+
+sudo apt update
+sudo apt install nano
+
+#Edit the ~/.zshrc File with nano:
+nano ~/.zshrc
+
+#OR
+vim ~/.zshrc
+
+	alias k='kubectl'
+	alias kc='kubectl create -f'
+	alias kn= 'kubectl get nodes' 
+	alias kgp='kubectl get pods'
+	alias kgs='kubectl get services'
+	alias kgns='kubectl get namespaces'
+	alias kga='kubectl get all'
+	alias kd='kubectl describe'
+	alias kdel='kubectl delete'
+	alias kap='kubectl apply -f'
+	alias kex='kubectl exec -it'
+	
+#Press Esc to exit insert mode.
+#Type :wq and press Enter to save and exit
