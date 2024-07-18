@@ -1,0 +1,65 @@
+1. Installing Kubernetes:
+
+	sudo apt-get update
+	sudo apt-get install -y apt-transport-https ca-certificates curl gnupg
+	curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+	sudo chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg # allow unprivileged APT programs to read this keyring
+	echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+	sudo chmod 644 /etc/apt/sources.list.d/kubernetes.list   # helps tools such as command-not-found to work correctly
+	sudo apt-get update
+	sudo apt-get install -y kubelet kubeadm kubectl
+	sudo apt-get update
+	sudo apt-get -y upgrade
+
+2. Verify:
+
+	kubectl version
+	kubelet --version
+	kubeadm version
+	kubectl version --client
+
+3. Install and Configure containerd
+
+	sudo apt-get update
+	sudo apt-get install -y containerd
+	sudo mkdir -p /etc/containerd
+	sudo containerd config default | sudo tee /etc/containerd/config.toml
+	sudo systemctl restart containerd
+	sudo systemctl enable containerd
+	sudo systemctl status containerd
+
+4. Rerun kubeadm init
+	
+	sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+
+5. Additional Troubleshooting
+
+	sudo journalctl -u containerd
+	sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=cri
+	
+
+	# Check Current IP Forwarding Setting:
+	sudo sysctl net.ipv4.ip_forward
+	sudo sysctl -w net.ipv4.ip_forward=1
+
+	# Enable IP Forwarding Permanently:
+	sudo vi /etc/sysctl.conf
+
+	# Add or modify the line:
+	net.ipv4.ip_forward = 1
+	sudo sysctl -p
+	sudo sysctl net.ipv4.ip_forward
+
+	# On_Worker Node:
+	sudo kubeadm join 172.31.18.83:6443 --token grz9xm.vjn2gpglrvdeg11r --discovery-token-ca-cert-hash 		sha256:6d6762c5ba4e4a1424eec606f6de9e3c0bee2a20554583bfefce7dc0c5934d8d
+
+
+
+
+
+6. Final Verification
+
+	mkdir -p $HOME/.kube
+	sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+	sudo chown $(id -u):$(id -g) $HOME/.kube/config
+	kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
