@@ -1,0 +1,40 @@
+To proceed with Minikube using the Docker driver as a non-root user, follow these steps:
+
+1. Create a Non-Root User (if you don't have one):
+
+	If you don't already have a non-root user, you can create one with the following command:
+
+		adduser myuser
+		usermod -ag sudo myuser
+		
+	replace myuser with your desired username.
+
+2. Switch to the Non-Root User:
+
+		su - myuser
+		
+3. Ensure Docker is set up for Non-Root Usage:
+
+	Add your user to the docker group if you haven't done so:
+
+		sudo usermod -aG docker $(whoami)
+		
+	Then log out and log back in for the group changes to take effect, or use newgrp to update the group membership:
+
+		newgrp docker
+		
+4. Start Minikube with Docker Driver and Multiple Nodes:
+
+		minikube start --driver=docker --nodes=3
+
+	If you must run Minikube as the root user, you can bypass the warning by using the --force flag:
+
+		minikube start --driver=docker --nodes=3 --force
+		
+	However, running Minikube as root with the Docker driver is not recommended due to potential security risks. It's best to use a non-root user whenever possible.
+
+
+
+
+
+
